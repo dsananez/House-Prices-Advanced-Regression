@@ -8,7 +8,7 @@ test <- read.csv("../input/test.csv", stringsAsFactors=FALSE)
 #Variables Exploration and Formatting
 
     #Character Variables List
-    str(train[, sapply(train, class) == "character"])
+    str(train[, !sapply(train, class) == "integer"])
     
     #MSZoning Boxplot
     
@@ -591,5 +591,430 @@ test <- read.csv("../input/test.csv", stringsAsFactors=FALSE)
     
     train$Exterior2nd <- as.integer(train$Exterior2nd)
     summary(lm(train$SalePrice~train$Exterior2nd))
+    
+    #MasVnrType Boxplot
+    
+    p <- ggplot(train, aes(x=MasVnrType, y=SalePrice, color=MasVnrType)) +
+        geom_boxplot()
+    p
+    
+    #MasVnrType mean t-tests
+    
+    means <- tapply(train$SalePrice, train$MasVnrType, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$MasVnrType == names(means[i])], train$SalePrice[train$MasVnrType == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #MasVnrType Ordinal Variables
+    
+    train$MasVnrType[train$MasVnrType %in% c("BrkCmn", "None")] <- 1
+    train$MasVnrType[train$MasVnrType == "BrkFace"] <- 2
+    train$MasVnrType[train$MasVnrType == "Stone"] <- 3
+
+    #MasVnrType Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=MasVnrType, y=SalePrice, color=MasVnrType)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #MasVnrType LM
+    
+    train$MasVnrType <- as.integer(train$MasVnrType)
+    summary(lm(train$SalePrice~train$MasVnrType))
+    
+    #ExterQual Boxplot
+    
+    p <- ggplot(train, aes(x=ExterQual, y=SalePrice, color=ExterQual)) +
+        geom_boxplot()
+    p
+    
+    #ExterQual mean t-tests
+    
+    means <- tapply(train$SalePrice, train$ExterQual, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$ExterQual == names(means[i])], train$SalePrice[train$ExterQual == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #ExterQual Ordinal Variables
+    
+    train$ExterQual[train$ExterQual == "Po"] <- 1
+    train$ExterQual[train$ExterQual == "Fa"] <- 2
+    train$ExterQual[train$ExterQual == "TA"] <- 3
+    train$ExterQual[train$ExterQual == "Gd"] <- 4
+    train$ExterQual[train$ExterQual == "Ex"] <- 5
+    
+    #ExterQual Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=ExterQual, y=SalePrice, color=ExterQual)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #ExterQual LM
+    
+    train$ExterQual <- as.integer(train$ExterQual)
+    summary(lm(train$SalePrice~train$ExterQual))
+    
+    #ExterCond Boxplot
+    
+    p <- ggplot(train, aes(x=ExterCond, y=SalePrice, color=ExterCond)) +
+        geom_boxplot()
+    p
+    
+    #ExterCond mean t-tests
+    
+    means <- tapply(train$SalePrice, train$ExterCond, mean)
+    means <- sort(means)
+    means <- means[-1]
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$ExterCond == names(means[i])], train$SalePrice[train$ExterCond == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #ExterCond Ordinal Variables
+    
+    train$ExterCond[train$ExterCond == "Po"] <- 1
+    train$ExterCond[train$ExterCond == "Fa"] <- 2
+    train$ExterCond[train$ExterCond == "TA"] <- 3
+    train$ExterCond[train$ExterCond == "Gd"] <- 4
+    train$ExterCond[train$ExterCond == "Ex"] <- 5
+    
+    #ExterCond Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=ExterCond, y=SalePrice, color=ExterCond)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #ExterCond LM
+    
+    train$ExterCond <- as.integer(train$ExterCond)
+    summary(lm(train$SalePrice~train$ExterCond))
+    
+    #Foundation Boxplot
+    
+    p <- ggplot(train, aes(x=Foundation, y=SalePrice, color=Foundation)) +
+        geom_boxplot()
+    p
+    
+    #Foundation mean t-tests
+    
+    means <- tapply(train$SalePrice, train$Foundation, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$Foundation == names(means[i])], train$SalePrice[train$Foundation == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #Foundation Ordinal Variables
+    
+    train$Foundation[train$Foundation == "Slab"] <- 1
+    train$Foundation[train$Foundation == "BrkTil"] <- 2
+    train$Foundation[train$Foundation == "CBlock"] <- 3
+    train$Foundation[train$Foundation == "Stone" | train$Foundation == "Wood"] <- 4
+    train$Foundation[train$Foundation == "PConc"] <- 5
+    
+    #Foundation Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=Foundation, y=SalePrice, color=Foundation)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #Foundation LM
+    
+    train$Foundation <- as.integer(train$Foundation)
+    summary(lm(train$SalePrice~train$Foundation))
+    
+    #BsmtQual Boxplot
+    
+    p <- ggplot(train, aes(x=BsmtQual, y=SalePrice, color=BsmtQual)) +
+        geom_boxplot()
+    p
+    
+    #BsmtQual mean t-tests
+    
+    means <- tapply(train$SalePrice, train$BsmtQual, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$BsmtQual == names(means[i])], train$SalePrice[train$BsmtQual == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #BsmtQual Ordinal Variables
+    
+    train$BsmtQual[train$BsmtQual == "Po"] <- 1
+    train$BsmtQual[train$BsmtQual == "Fa"] <- 2
+    train$BsmtQual[train$BsmtQual == "TA"] <- 3
+    train$BsmtQual[train$BsmtQual == "Gd"] <- 4
+    train$BsmtQual[train$BsmtQual == "Ex"] <- 5
+    
+    #BsmtQual Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=BsmtQual, y=SalePrice, color=BsmtQual)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #BsmtQual LM
+    
+    train$BsmtQual <- as.integer(train$BsmtQual)
+    summary(lm(train$SalePrice~train$BsmtQual))
+    
+    #BsmtCond Boxplot
+    
+    p <- ggplot(train, aes(x=BsmtCond, y=SalePrice, color=BsmtCond)) +
+        geom_boxplot()
+    p
+    
+    #BsmtCond mean t-tests
+    
+    means <- tapply(train$SalePrice, train$BsmtCond, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$BsmtCond == names(means[i])], train$SalePrice[train$BsmtCond == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #BsmtCond Ordinal Variables
+    
+    train$BsmtCond[train$BsmtCond == "Po"] <- 1
+    train$BsmtCond[train$BsmtCond == "Fa"] <- 2
+    train$BsmtCond[train$BsmtCond == "TA"] <- 3
+    train$BsmtCond[train$BsmtCond == "Gd"] <- 4
+    train$BsmtCond[train$BsmtCond == "Gd"] <- 5
+    
+    #BsmtCond Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=BsmtCond, y=SalePrice, color=BsmtCond)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #BsmtCond LM
+    
+    train$BsmtCond <- as.integer(train$BsmtCond)
+    summary(lm(train$SalePrice~train$BsmtCond))
+    
+    #BsmtExposure Boxplot
+    
+    p <- ggplot(train, aes(x=BsmtExposure, y=SalePrice, color=BsmtExposure)) +
+        geom_boxplot()
+    p
+    
+    #BsmtExposure mean t-tests
+    
+    means <- tapply(train$SalePrice, train$BsmtExposure, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$BsmtExposure == names(means[i])], train$SalePrice[train$BsmtExposure == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #BsmtExposure Ordinal Variables
+    
+    train$BsmtExposure[train$BsmtExposure == "No"] <- 1
+    train$BsmtExposure[train$BsmtExposure == "Mn"] <- 2
+    train$BsmtExposure[train$BsmtExposure == "Av"] <- 3
+    train$BsmtExposure[train$BsmtExposure == "Gd"] <- 4
+    
+    #BsmtExposure Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=BsmtExposure, y=SalePrice, color=BsmtExposure)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #BsmtExposure LM
+    
+    train$BsmtExposure <- as.integer(train$BsmtExposure)
+    summary(lm(train$SalePrice~train$BsmtExposure))
+    
+    #BsmtFinType1 Boxplot
+    
+    p <- ggplot(train, aes(x=BsmtFinType1, y=SalePrice, color=BsmtFinType1)) +
+        geom_boxplot()
+    p
+    
+    #BsmtFinType1 mean t-tests
+    
+    means <- tapply(train$SalePrice, train$BsmtFinType1, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$BsmtFinType1 == names(means[i])], train$SalePrice[train$BsmtFinType1 == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #BsmtFinType1 Ordinal Variables
+    
+  
+    train$BsmtFinType1[train$BsmtFinType1 == "Rec" | train$BsmtFinType1 == "BLQ" | train$BsmtFinType1 == "LwQ"] <- 1
+    train$BsmtFinType1[train$BsmtFinType1 == "ALQ"] <- 2
+    train$BsmtFinType1[train$BsmtFinType1 == "Unf"] <- 3
+    train$BsmtFinType1[train$BsmtFinType1 == "GLQ"] <- 4 
+    #BsmtFinType1 Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=BsmtFinType1, y=SalePrice, color=BsmtFinType1)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #BsmtFinType1 LM
+    
+    train$BsmtFinType1 <- as.integer(train$BsmtFinType1)
+    summary(lm(train$SalePrice~train$BsmtFinType1))
+    
+    #BsmtFinType2 Boxplot
+    
+    p <- ggplot(train, aes(x=BsmtFinType2, y=SalePrice, color=BsmtFinType2)) +
+        geom_boxplot()
+    p
+    
+    #BsmtFinType2 mean t-tests
+    
+    means <- tapply(train$SalePrice, train$BsmtFinType2, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$BsmtFinType2 == names(means[i])], train$SalePrice[train$BsmtFinType2 == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #BsmtFinType2 Ordinal Variables
+    
+    train$BsmtFinType2[train$BsmtFinType2 == "Rec" | train$BsmtFinType2 == "BLQ" | train$BsmtFinType2 == "LwQ"] <- 1
+    train$BsmtFinType2[train$BsmtFinType2 == "ALQ"] <- 2
+    train$BsmtFinType2[train$BsmtFinType2 == "Unf"] <- 3
+    train$BsmtFinType2[train$BsmtFinType2 == "GLQ"] <- 4 
+    
+    #BsmtFinType2 Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=BsmtFinType2, y=SalePrice, color=BsmtFinType2)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #BsmtFinType2 LM
+    
+    train$BsmtFinType2 <- as.integer(train$BsmtFinType2)
+    summary(lm(train$SalePrice~train$BsmtFinType2))
+    
+    #Heating Boxplot
+    
+    p <- ggplot(train, aes(x=Heating, y=SalePrice, color=Heating)) +
+        geom_boxplot()
+    p
+    
+    #Heating mean t-tests
+    
+    means <- tapply(train$SalePrice, train$Heating, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$Heating == names(means[i])], train$SalePrice[train$Heating == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #Heating Ordinal Variables
+    
+    train$Heating[train$Heating == "Floor" | train$Heating == "Grav" | train$Heating == "Wall"] <- 1
+    train$Heating[train$Heating == "OthW"] <- 2
+    train$Heating[train$Heating == "GasW"] <- 3
+    train$Heating[train$Heating == "GasA"] <- 4
+    
+    #Heating Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=Heating, y=SalePrice, color=Heating)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #Heating LM
+    
+    train$Heating <- as.integer(train$Heating)
+    summary(lm(train$SalePrice~train$Heating))
+    
+    #HeatingQC Boxplot
+    
+    p <- ggplot(train, aes(x=HeatingQC, y=SalePrice, color=HeatingQC)) +
+        geom_boxplot()
+    p
+    
+    #HeatingQC mean t-tests
+    
+    means <- tapply(train$SalePrice, train$HeatingQC, mean)
+    means <- sort(means)
+    means <- means[-1]
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$HeatingQC == names(means[i])], train$SalePrice[train$HeatingQC == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #HeatingQC Ordinal Variables
+    
+    train$HeatingQC[train$HeatingQC == "Po"] <- 1
+    train$HeatingQC[train$HeatingQC == "Fa"] <- 2
+    train$HeatingQC[train$HeatingQC == "TA"] <- 3
+    train$HeatingQC[train$HeatingQC == "Gd"] <- 4
+    train$HeatingQC[train$HeatingQC == "Ex"] <- 5
+        
+    #HeatingQC Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=HeatingQC, y=SalePrice, color=HeatingQC)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #HeatingQC LM
+    
+    train$HeatingQC <- as.integer(train$HeatingQC)
+    summary(lm(train$SalePrice~train$HeatingQC))
+    
+    #CentralAir Boxplot
+    
+    p <- ggplot(train, aes(x=CentralAir, y=SalePrice, color=CentralAir)) +
+        geom_boxplot()
+    p
+    
+    #CentralAir mean t-tests
+    
+    means <- tapply(train$SalePrice, train$CentralAir, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$CentralAir == names(means[i])], train$SalePrice[train$CentralAir == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #CentralAir Ordinal Variables
+    
+    train$CentralAir[!train$CentralAir == "Y"] <- 0
+    train$CentralAir[train$CentralAir == "Y"] <- 1
+    
+    #CentralAir Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=CentralAir, y=SalePrice, color=CentralAir)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #CentralAir LM
+    
+    train$CentralAir <- as.integer(train$CentralAir)
+    summary(lm(train$SalePrice~train$CentralAir))
     
     
