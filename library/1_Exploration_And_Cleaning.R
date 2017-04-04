@@ -63,7 +63,7 @@ test <- read.csv("../input/test.csv", stringsAsFactors=FALSE)
     train$Street[train$Street == "Grvl"] <- 0
     train$Street[train$Street == "Pave"] <- 1
 
-   #Street LM
+    #Street LM
     
     train$Street <- as.integer(train$Street)
     summary(lm(train$SalePrice~train$Street))
@@ -215,8 +215,8 @@ test <- read.csv("../input/test.csv", stringsAsFactors=FALSE)
     
     #LotConfig Ordinal Variables
     
-    train$LotConfig[train$LotConfig == "FR3" | train$LotConfig != "CulDSac"] <- 0
-    train$LotConfig[train$LotConfig == "FR3" | train$LotConfig == "CulDSac"] <- 1
+    train$LotConfig[train$LotConfig != "CulDSac"] <- 0
+    train$LotConfig[train$LotConfig == "CulDSac"] <- 1
     
     #LotConfig Ordinal Boxplot
     
@@ -1017,4 +1017,594 @@ test <- read.csv("../input/test.csv", stringsAsFactors=FALSE)
     train$CentralAir <- as.integer(train$CentralAir)
     summary(lm(train$SalePrice~train$CentralAir))
     
+    #Electrical Boxplot
+    
+    p <- ggplot(train, aes(x=Electrical, y=SalePrice, color=Electrical)) +
+        geom_boxplot()
+    p
+    
+    #Electrical mean t-tests
+    
+    means <- tapply(train$SalePrice, train$Electrical, mean)
+    means <- sort(means)
+    means <- means[-1]
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$Electrical == names(means[i])], train$SalePrice[train$Electrical == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #Electrical Ordinal Variables
+    
+    train$Electrical[train$Electrical == "Mix"] <- 1
+    train$Electrical[train$Electrical == "FuseP" | train$Electrical == "FuseF"] <- 2
+    train$Electrical[train$Electrical == "FuseA"] <- 3
+    train$Electrical[train$Electrical == "SBrkr"] <- 4
+    
+    #Electrical Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=Electrical, y=SalePrice, color=Electrical)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #Electrical LM
+    
+    train$Electrical <- as.integer(train$Electrical)
+    summary(lm(train$SalePrice~train$Electrical))
+    
+    #KitchenQual Boxplot
+    
+    p <- ggplot(train, aes(x=KitchenQual, y=SalePrice, color=KitchenQual)) +
+        geom_boxplot()
+    p
+    
+    #KitchenQual mean t-tests
+    
+    means <- tapply(train$SalePrice, train$KitchenQual, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$KitchenQual == names(means[i])], train$SalePrice[train$KitchenQual == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #KitchenQual Ordinal Variables
+    
+    train$KitchenQual[train$KitchenQual == "Po"] <- 1
+    train$KitchenQual[train$KitchenQual == "Fa"] <- 2
+    train$KitchenQual[train$KitchenQual == "TA"] <- 3
+    train$KitchenQual[train$KitchenQual == "Gd"] <- 4
+    train$KitchenQual[train$KitchenQual == "Ex"] <- 5
+    
+    #KitchenQual Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=KitchenQual, y=SalePrice, color=KitchenQual)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #KitchenQual LM
+    
+    train$KitchenQual <- as.integer(train$KitchenQual)
+    summary(lm(train$SalePrice~train$KitchenQual))
+    
+    #Functional Boxplot
+    
+    p <- ggplot(train, aes(x=Functional, y=SalePrice, color=Functional)) +
+        geom_boxplot()
+    p
+    
+    #Functional mean t-tests
+    
+    means <- tapply(train$SalePrice, train$Functional, mean)
+    means <- sort(means)
+    means <- means[-2]
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$Functional == names(means[i])], train$SalePrice[train$Functional == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #Functional Ordinal Variables
+    
+    train$Functional[!train$Functional %in% c("Maj2", "Sev")] <- 1
+    train$Functional[train$Functional %in% c("Maj2", "Sev")] <- 0
+    
+    #Functional Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=Functional, y=SalePrice, color=Functional)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #Functional LM
+    
+    train$Functional <- as.integer(train$Functional)
+    summary(lm(train$SalePrice~train$Functional))
+    
+    #FireplaceQu Boxplot
+    
+    p <- ggplot(train, aes(x=FireplaceQu, y=SalePrice, color=FireplaceQu)) +
+        geom_boxplot()
+    p
+    
+    #FireplaceQu NA's
+    
+    train$FireplaceQu[is.na(train$FireplaceQu)] <- "No"
+    
+    #FireplaceQu mean t-tests
+    
+    means <- tapply(train$SalePrice, train$FireplaceQu, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$FireplaceQu == names(means[i])], train$SalePrice[train$FireplaceQu == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #FireplaceQu Ordinal Variables
+    
+    train$FireplaceQu[train$FireplaceQu == "Po"] <- 1
+    train$FireplaceQu[train$FireplaceQu == "No"] <- 2
+    train$FireplaceQu[train$FireplaceQu == "Fa"] <- 3
+    train$FireplaceQu[train$FireplaceQu == "TA"] <- 4
+    train$FireplaceQu[train$FireplaceQu == "Gd"] <- 5
+    train$FireplaceQu[train$FireplaceQu == "Ex"] <- 6
+    
+    #FireplaceQu Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=FireplaceQu, y=SalePrice, color=FireplaceQu)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #FireplaceQu LM
+    
+    train$FireplaceQu <- as.integer(train$FireplaceQu)
+    summary(lm(train$SalePrice~train$FireplaceQu))
+    
+    #GarageType Boxplot
+    
+    p <- ggplot(train, aes(x=GarageType, y=SalePrice, color=GarageType)) +
+        geom_boxplot()
+    p
+    
+    #GarageType NA's
+    
+    train$GarageType[is.na(train$GarageType)] <- "No"
+    
+    #GarageType mean t-tests
+    
+    means <- tapply(train$SalePrice, train$GarageType, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$GarageType == names(means[i])], train$SalePrice[train$GarageType == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #GarageType Ordinal Variables
+    
+    train$GarageType[train$GarageType == "No" | train$GarageType == "CarPort"] <- 1
+    train$GarageType[train$GarageType %in% c("Detchd","2Types","Basment")] <- 2
+    train$GarageType[train$GarageType == "Attchd"] <- 3
+    train$GarageType[train$GarageType == "BuiltIn"] <- 4
+    
+    #GarageType Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=GarageType, y=SalePrice, color=GarageType)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #GarageType LM
+    
+    train$GarageType <- as.integer(train$GarageType)
+    summary(lm(train$SalePrice~train$GarageType))
+    
+    #GarageFinish Boxplot
+    
+    p <- ggplot(train, aes(x=GarageFinish, y=SalePrice, color=GarageFinish)) +
+        geom_boxplot()
+    p
+    
+    #GarageFinish NA's
+    
+    train$GarageFinish[is.na(train$GarageFinish)] <- "No"
+    
+    #GarageFinish mean t-tests
+    
+    means <- tapply(train$SalePrice, train$GarageFinish, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$GarageFinish == names(means[i])], train$SalePrice[train$GarageFinish == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #GarageFinish Ordinal Variables
+    
+    train$GarageFinish[train$GarageFinish == "No"] <- 1
+    train$GarageFinish[train$GarageFinish == "Unf"] <- 2
+    train$GarageFinish[train$GarageFinish == "RFn"] <- 3
+    train$GarageFinish[train$GarageFinish == "Fin"] <- 4
+    
+    #GarageFinish Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=GarageFinish, y=SalePrice, color=GarageFinish)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #GarageFinish LM
+    
+    train$GarageFinish <- as.integer(train$GarageFinish)
+    summary(lm(train$SalePrice~train$GarageFinish))
+    
+    #GarageQual Boxplot
+    
+    p <- ggplot(train, aes(x=GarageQual, y=SalePrice, color=GarageQual)) +
+        geom_boxplot()
+    p
+    
+    #GarageQual NA's
+    
+    train$GarageQual[is.na(train$GarageQual)] <- "No"
+    
+    #GarageQual mean t-tests
+    
+    means <- tapply(train$SalePrice, train$GarageQual, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$GarageQual == names(means[i])], train$SalePrice[train$GarageQual == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #GarageQual Ordinal Variables
+    
+    train$GarageQual[train$GarageQual == "No" | train$GarageQual == "Po"] <- 1
+    train$GarageQual[train$GarageQual == "Fa"] <- 2
+    train$GarageQual[train$GarageQual == "TA"] <- 3
+    train$GarageQual[train$GarageQual == "Gd"] <- 4
+    train$GarageQual[train$GarageQual == "Ex"] <- 5
+    
+    #GarageQual Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=GarageQual, y=SalePrice, color=GarageQual)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #GarageQual LM
+    
+    train$GarageQual <- as.integer(train$GarageQual)
+    summary(lm(train$SalePrice~train$GarageQual))
+    
+    #GarageCond NA's
+    
+    train$GarageCond[is.na(train$GarageCond)] <- "No"
+    
+    #GarageCond Boxplot
+    
+    p <- ggplot(train, aes(x=GarageCond, y=SalePrice, color=GarageCond)) +
+        geom_boxplot()
+    p
+    
+    #GarageCond mean t-tests
+    
+    means <- tapply(train$SalePrice, train$GarageCond, mean)
+    means <- sort(means)
+    means <- means[-4]
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$GarageCond == names(means[i])], train$SalePrice[train$GarageCond == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #GarageCond Ordinal Variables
+    
+    train$GarageCond[!train$GarageCond %in% c("Gd", "TA")] <- 0
+    train$GarageCond[train$GarageCond %in% c("Gd", "TA")] <- 1
+
+    #GarageCond Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=GarageCond, y=SalePrice, color=GarageCond)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #GarageCond LM
+    
+    train$GarageCond <- as.integer(train$GarageCond)
+    summary(lm(train$SalePrice~train$GarageCond))
+    
+    #PavedDrive Boxplot
+    
+    p <- ggplot(train, aes(x=PavedDrive, y=SalePrice, color=PavedDrive)) +
+        geom_boxplot()
+    p
+    
+    #PavedDrive mean t-tests
+    
+    means <- tapply(train$SalePrice, train$PavedDrive, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$PavedDrive == names(means[i])], train$SalePrice[train$PavedDrive == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #PavedDrive Ordinal Variables
+    
+    train$PavedDrive[train$PavedDrive == "N"] <- 1
+    train$PavedDrive[train$PavedDrive == "P"] <- 2
+    train$PavedDrive[train$PavedDrive == "Y"] <- 3
+
+    #PavedDrive Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=PavedDrive, y=SalePrice, color=PavedDrive)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #PavedDrive LM
+    
+    train$PavedDrive <- as.integer(train$PavedDrive)
+    summary(lm(train$SalePrice~train$PavedDrive))
+    
+    #PoolQC Boxplot
+    
+    p <- ggplot(train, aes(x=PoolQC, y=SalePrice, color=PoolQC)) +
+        geom_boxplot()
+    p
+    
+    #PoolQC NA's
+    
+    train$PoolQC[is.na(train$PoolQC)] <- "No"
+    
+    #PoolQC mean t-tests
+    
+    means <- tapply(train$SalePrice, train$PoolQC, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$PoolQC == names(means[i])], train$SalePrice[train$PoolQC == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #PoolQC Ordinal Variables
+    
+    train$PoolQC[train$PoolQC != "Ex"] <- 0
+    train$PoolQC[train$PoolQC == "Ex"] <- 1
+    
+    #PoolQC Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=PoolQC, y=SalePrice, color=PoolQC)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #PoolQC LM
+    
+    train$PoolQC <- as.integer(train$PoolQC)
+    summary(lm(train$SalePrice~train$PoolQC))
+    
+    #Fence Boxplot
+    
+    p <- ggplot(train, aes(x=Fence, y=SalePrice, color=Fence)) +
+        geom_boxplot()
+    p
+    
+    #Fence NA's
+    
+    train$Fence[is.na(train$Fence)] <- "No"
+    
+    #Fence mean t-tests
+    
+    means <- tapply(train$SalePrice, train$Fence, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$Fence == names(means[i])], train$SalePrice[train$Fence == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #Fence Ordinal Variables
+    
+    train$Fence[train$Fence == "MnWw" | train$Fence == "GdWo" | train$Fence == "MnPrv"] <- 0
+    train$Fence[train$Fence == "GdPrv" | train$Fence == "No"] <- 1
+    
+    #Fence Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=Fence, y=SalePrice, color=Fence)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #Fence LM
+    
+    train$Fence <- as.integer(train$Fence)
+    summary(lm(train$SalePrice~train$Fence))
+    
+    #MiscFeature Boxplot
+    
+    p <- ggplot(train, aes(x=MiscFeature, y=SalePrice, color=MiscFeature)) +
+        geom_boxplot()
+    p
+    
+    #MiscFeature mean t-tests
+    
+    means <- tapply(train$SalePrice, train$MiscFeature, mean)
+    means <- sort(means)
+    means <- means[-4]
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$MiscFeature == names(means[i])], train$SalePrice[train$MiscFeature == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #MiscFeature Ordinal Variables
+    
+    train$MiscFeature <- 0
+    
+    #MiscFeature Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=MiscFeature, y=SalePrice, color=MiscFeature)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #MiscFeature LM
+    
+    train$MiscFeature <- as.integer(train$MiscFeature)
+    summary(lm(train$SalePrice~train$MiscFeature))
+    
+    #SaleType Boxplot
+    
+    p <- ggplot(train, aes(x=SaleType, y=SalePrice, color=SaleType)) +
+        geom_boxplot()
+    p
+    
+    #SaleType mean t-tests
+    
+    means <- tapply(train$SalePrice, train$SaleType, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$SaleType == names(means[i])], train$SalePrice[train$SaleType == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #SaleType Ordinal Variables
+    
+    train$SaleType[!train$SaleType %in% c("Oth", "ConLD", "ConLw", "COD")] <- 1
+    train$SaleType[train$SaleType %in% c("Oth", "ConLD", "ConLw", "COD")] <- 0
+
+    
+    #SaleType Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=SaleType, y=SalePrice, color=SaleType)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #SaleType LM
+    
+    train$SaleType <- as.integer(train$SaleType)
+    summary(lm(train$SalePrice~train$SaleType))
+    
+    #SaleCondition Boxplot
+    
+    p <- ggplot(train, aes(x=SaleCondition, y=SalePrice, color=SaleCondition)) +
+        geom_boxplot()
+    p
+    
+    #SaleCondition mean t-tests
+    
+    means <- tapply(train$SalePrice, train$SaleCondition, mean)
+    means <- sort(means)
+    ttest <- NULL
+    for (i in 1:(length(means)-1)){
+        ttest[i] <- t.test(train$SalePrice[train$SaleCondition == names(means[i])], train$SalePrice[train$SaleCondition == names(means[i+1])], "l")$p.value
+    }
+    round(ttest, 5)
+    
+    #SaleCondition Ordinal Variables
+    
+    train$SaleCondition[train$SaleCondition == "AdjLand"] <- 1
+    train$SaleCondition[train$SaleCondition %in% c("Family","Abnorml", "Alloca", "Normal")] <- 2
+    train$SaleCondition[train$SaleCondition == "Partial"] <- 3
+    
+    #SaleCondition Ordinal Boxplot
+    
+    p2<- ggplot(train, aes(x=SaleCondition, y=SalePrice, color=SaleCondition)) +
+        geom_boxplot()
+    
+    multiplot(p, p2)
+    
+    #SaleCondition LM
+    
+    train$SaleCondition <- as.integer(train$SaleCondition)
+    summary(lm(train$SalePrice~train$SaleCondition))
+    
+#Plots
+    
+correlations <- cor(train, use="everything")
+corrplot(correlations, method="circle", type="lower",  sig.level = 0.01, insig = "blank")
+
+scatterplot(SalePrice ~ YearBuilt, data=train,  xlab="Year Built", ylab="Sale Price", grid=FALSE)
+    
+scatterplot(SalePrice ~ YrSold, data=train,  xlab="Year Sold", ylab="Sale Price", grid=FALSE)    
+
+scatterplot(SalePrice ~ X1stFlrSF, data=train,  xlab="Square Footage Floor 1", ylab="Sale Price", grid=FALSE)
+
+#Prep Model
+
+outcome <- train$SalePrice
+
+partition <- createDataPartition(y=outcome,
+                                 p=.5,
+                                 list=F)
+training <- train[partition,]
+testing <- train[-partition,]
+
+#Linear Model
+
+lm_model_15 <- lm(SalePrice ~ ., data=training)
+summary(lm_model_15)
+
+lm_model_15 <- lm(SalePrice ~ MSSubClass+LotFrontage+LotArea+
+                      LandContour+Alley+LotConfig+
+                      Neighborhood+Condition1+
+                      HouseStyle+OverallQual+
+                      OverallCond+RoofMatl+MasVnrArea+ExterQual+ExterCond+
+                      BsmtQual+BsmtExposure+BsmtFinSF1+X1stFlrSF+X2ndFlrSF+
+                      +KitchenAbvGr+KitchenQual+TotRmsAbvGrd+Fireplaces+
+                      GarageCars+GarageQual+ScreenPorch+PoolArea+PoolQC+
+                      SaleCondition, data=training)
+summary(lm_model_15)
+
+lm_model_15 <- lm(SalePrice ~ MSSubClass+LotFrontage+LotArea+
+                      LotConfig+
+                      Neighborhood+Condition1+
+                      HouseStyle+OverallQual+
+                      OverallCond+MasVnrArea+
+                      BsmtQual+BsmtExposure+BsmtFinSF1+X1stFlrSF+X2ndFlrSF+
+                      +KitchenQual+TotRmsAbvGrd+Fireplaces+
+                      GarageCars+ScreenPorch+PoolArea+PoolQC+
+                      SaleCondition, data=training)
+
+summary(lm_model_15)
+
+#Predictions
+
+prediction <- predict(lm_model_15, testing, type="response")
+model_output <- cbind(testing, prediction)
+model_output <- model_output[!is.na(prediction),]
+
+model_output$log_prediction <- log(model_output$prediction)
+model_output$log_SalePrice <- log(model_output$SalePrice)
+
+#Test with RMSE
+
+rmse(model_output$log_SalePrice,model_output$log_prediction)
+
+#Random Forests
+
+model_1 <- randomForest(SalePrice ~ ., data=training)
+
+
+# Predict using the test set
+prediction <- predict(model_1, testing)
+model_output <- cbind(testing, prediction)
+
+
+model_output$log_prediction <- log(model_output$prediction)
+model_output$log_SalePrice <- log(model_output$SalePrice)
+
+#Test with RMSE
+
+rmse(model_output$log_SalePrice,model_output$log_prediction)
     
